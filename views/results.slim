@@ -1,0 +1,14 @@
+div class="container-fluid"
+	h3 Search result
+	p Found the following tweets to topic: <b>#{@topic}</b>
+	div class="panel panel-default"
+		table class="table"
+			tr
+				th ID
+				th Screen name
+				th Text
+			- @results.each do |result|
+			  tr
+				td #{result.id}
+				td #{result.user.screen_name}
+				td #{result.text}

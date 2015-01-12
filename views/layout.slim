@@ -1,0 +1,36 @@
+doctype html
+html
+	head
+		meta charset="utf-8"
+		title Nairuby TwitterBot
+		link rel="shortcut icon" type="image/x-icon" href="/img/favicon.ico"
+		link rel="stylesheet" href="/css/bootstrap.min.css"
+		link rel="stylesheet" href="/css/sticky-footer.css"
+		
+		/[if lt IE 9]
+			script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"
+	body
+
+		div id="wrap"
+			div class="container"
+				div class="page-header text-center"
+					img src="/img/logo_128x128.png"
+					h1 Nairuby TwitterBot
+
+		div class="container"
+			span
+				ul class="nav nav-pills"
+					li role="navigation" 
+						a href="/" Home
+					li role="navigation"
+						a href="search" Search
+					li role="navigation"
+						a href="retweet" Retweet
+			== yield
+
+		div class="footer"
+			div class="container"
+				p class="text-muted pagination-centered" 
+					'Created by: 
+					a href="http://twitter.com/creutis" Christian Reuterwall 
+		scipt src="/js/bootstrap.min.js"
