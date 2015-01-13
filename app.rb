@@ -10,7 +10,7 @@ DataMapper.setup(:default, ENV['DATABASE_URL'] || "sqlite3://#{Dir.pwd}/developm
 class Tweets
 	include DataMapper::Resource
 	property :id, Serial
-	property :tweet_id, Integer, :required => true
+	property :tweet_id, String, :required => true
 	property :tweet_user_screen_name, String
 	property :tweet_text, String
 	property :retweeted, Boolean
@@ -25,7 +25,7 @@ DataMapper.auto_migrate!
 Tweets.auto_upgrade!
 
 #Create one default post in the database
-@intial_datapost = Tweets.create(:tweet_id => 1111111111,
+@intial_datapost = Tweets.create(:tweet_id => "1111111111",
 	:tweet_user_screen_name => "INITIAL POST",
 	:tweet_text => "THIS SHOULD BE REMOVED",
 	:retweeted => false,
@@ -63,7 +63,7 @@ post '/retweet' do
 		puts "Twitter id: #{tweet.id} - #{tweet.text}"
 		if Tweets.count(:tweet_id =>tweet.id) == 0
 			puts "Creting database record for #{tweet.id}"
-			Tweets.create(:tweet_id => tweet.id,
+			Tweets.create(:tweet_id => tweet.id.to_s,
 				:tweet_user_screen_name => tweet.user.screen_name,
 				:tweet_text => tweet.text,
 				:retweeted => true,
