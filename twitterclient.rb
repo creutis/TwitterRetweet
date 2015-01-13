@@ -25,6 +25,10 @@ class TwitterClient
 	def retweet(id)
 		client.retweet(id)
 	end
+
+	def user
+		client.current_user
+	end
 end
 
 tc = TwitterClient.new

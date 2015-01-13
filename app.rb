@@ -34,6 +34,7 @@ Tweets.auto_upgrade!
 #Default route
 get '/' do
 	@tweets = Tweets.all(:order => [ :id.desc])
+	puts "Will be using #{client.user.screen_name} - #{client.user} twitter account" 
 	slim :index
 end
 
@@ -61,7 +62,7 @@ post '/retweet' do
 
 	@twitter_search.each do |tweet|
 		puts "Twitter id: #{tweet.id} - #{tweet.text}"
-		if Tweets.count(:tweet_id =>tweet.id) == 0
+		if Tweets.count(:tweet_id =>tweet.id) == 0 && tweet.user != client.user
 			puts "Creting database record for #{tweet.id}"
 			Tweets.create(:tweet_id => tweet.id.to_s,
 				:tweet_user_screen_name => tweet.user.screen_name,
@@ -71,7 +72,7 @@ post '/retweet' do
 			puts "Retweeting #{tweet.id}"
 			client.retweet(tweet.id)
 		else
-			puts "Twitter ID: #{tweet.id} already in database"
+			puts "#{tweet.user.screen_name} - Twitter ID: #{tweet.id} already in database or trying to retweet your own tweets"
 		end
 	end
 
