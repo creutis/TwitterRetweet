@@ -29,8 +29,12 @@ class TwitterClient
 	def user
 		client.current_user
 	end
+
+	def my_retweets
+		client.retweeted_by_me
+	end
 end
 
-tc = TwitterClient.new
+#tc = TwitterClient.new
 
-tc.search("#nairuby")
+#tc.search("#nairuby")

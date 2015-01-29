@@ -1,0 +1,20 @@
+div class="container-fluid"
+	h3 Database content
+	p These are the tweets stored in the database
+	div class="panel panel-default"
+		table class="table"
+			tr
+				th ID
+				th Tweet ID
+				th Screen name
+				th Text
+				th Retweeted
+				th Retweeted at
+			- @tweets.each do |tweet|
+				tr
+					td #{tweet.id}
+					td #{tweet.tweet_id}
+					td #{tweet.tweet_user_screen_name}
+					td #{tweet.tweet_text}
+					td #{tweet.retweeted}
+					td #{tweet.retweeted_at}
