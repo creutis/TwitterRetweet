@@ -4,8 +4,8 @@ html
 		meta charset="utf-8"
 		title Nairuby TwitterBot
 		link rel="shortcut icon" type="image/x-icon" href="/img/favicon.ico"
-		link rel="stylesheet" href="/css/bootstrap.min.css"
-		link rel="stylesheet" href="/css/sticky-footer.css"
+		link rel="stylesheet" href="css/bootstrap.min.css"
+		link rel="stylesheet" href="css/sticky-footer.css"
 		
 		/[if lt IE 9]
 			script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"
@@ -30,9 +30,10 @@ html
 						a href="db_view" Database
 			== yield
 
-		div class="footer"
+		footer class="footer"
 			div class="container"
-				p class="text-muted pagination-centered" 
-					'Created by: 
-					a href="http://twitter.com/creutis" Christian Reuterwall 
+				p class="text-muted text-center" 
+					'Created by: <a href="http://twitter.com/creutis">Christian Reuterwall</a> 
+
+		script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"			
 		script src="/js/bootstrap.min.js"
