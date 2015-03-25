@@ -1,4 +1,10 @@
 div class="container-fluid"
+	h3 This will retweet using the followers and topic database
+	p It will first get which user to check the timeline off - this is to minimize the number of calls.<br> It will then get that users timeline and find the tweets that matches the topics in the database.<br>Finally it will retweet the tweets found - update the retweet database and the followers database.
+
+	form action="/retweet_from_db" method="post"
+		button class="btn btn-primary" type="submit" value="Retweet From DB" Retweet DB
+
 	h3 This will retweet all occurences of <b>#nairuby</b>
 	p It will search for #nairuby and check the database is the tweet already exist, if not it will retweet and add the tweet to the databse.
 

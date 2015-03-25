@@ -1,0 +1,18 @@
+div class="container-fluid"
+	h3 Followers
+	p These are the current followers for this client
+	div class="panel panel-default"
+		table class="table"
+			tr
+				th ID
+				th User ID
+				th Screen name
+				th Name
+				th Lastest search
+			- @followers.each do |follower|
+				tr
+					td #{follower.id}
+					td #{follower.user_id}
+					td #{follower.user_screen_name}
+					td #{follower.user_name}
+					td #{follower.latest_search}

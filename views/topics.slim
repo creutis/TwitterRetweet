@@ -1,0 +1,19 @@
+div class="container-fluid"
+	h3 Topics
+	p These are the topics to be used for searches
+	div class="panel panel-default"
+		table class="table"
+			tr
+				th Topic
+				th Edit
+			- @topics.each do |topic|
+				tr
+					td #{topic.topic}
+					td <a href="/topics/:#{topic.id}">[edit]</a>
+	
+	p Add new topic
+	form action="/topics/new" method="post"
+		div class="input-group"
+			input type="text" name="topic" class="form-control" placeholder="Add new topic..." 
+				span class="input-group-btn"
+					button class="btn btn-default" type="submit" value="Add new topic" Add

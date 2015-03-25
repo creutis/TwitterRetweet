@@ -4,8 +4,8 @@ html
 		meta charset="utf-8"
 		title Nairuby TwitterBot
 		link rel="shortcut icon" type="image/x-icon" href="/img/favicon.ico"
-		link rel="stylesheet" href="css/bootstrap.min.css"
-		link rel="stylesheet" href="css/sticky-footer.css"
+		link rel="stylesheet" href="/css/bootstrap.min.css"
+		link rel="stylesheet" href="/css/sticky-footer.css"
 		
 		/[if lt IE 9]
 			script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"
@@ -23,11 +23,15 @@ html
 					li role="navigation" 
 						a href="/" Home
 					li role="navigation"
-						a href="search" Search
+						a href="/search" Search
 					li role="navigation"
-						a href="retweet" Retweet
+						a href="/retweet" Retweet
 					li role="navigation"
-						a href="db_view" Database
+						a href="/db_view" Retweets
+					li role="navigation" 
+						a href="/topics" Topics
+					li role="navigation" 
+						a href="/followers" Followers	
 			== yield
 
 		footer class="footer"

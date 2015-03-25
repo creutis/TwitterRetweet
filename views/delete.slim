@@ -1,0 +1,13 @@
+div class="container-fluid"
+	h3 Delete
+	-if @topic
+		p Are you sure you want to delete the following topic: <b><em>#{@topic.topic}</em></b>
+		div class="btn-group"
+			
+			form action="/topics/:#{@topic.id}/delete" method="post" id="edit"
+					input type="hidden" name="_method" value="delete"
+					button class="btn btn-danger" type="submit" value="Delete" Yes, Delete It!
+			form action="/topics/:#{@topic.id}" method="GET"
+					button class="btn btn-primary" type="submit" value="Cancel" Cancel
+	-else
+		P No topic to delete

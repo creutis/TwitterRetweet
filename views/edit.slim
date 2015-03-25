@@ -1,0 +1,13 @@
+div class="container-fluid"
+	h3 Edit
+	-if @topic
+		p Edit topic: <b><em>#{@topic.topic}</em></b>
+		form action="/topics/:#{@topic.id}" method="post" id="edit"
+			div class="input-group"
+				input type="hidden" name="_method" value="put"
+				input type="text" name="topic" class="form-control" placeholder="Change topic from #{@topic.topic}..." 
+					span class="input-group-btn"
+						button class="btn btn-default" type="submit" value="Change value" Change
+		<a href="/topics/:#{@topic.id}/delete">Delete</a>
+	-else
+		P No topic to edit

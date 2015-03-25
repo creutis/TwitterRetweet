@@ -1,4 +1,5 @@
 require 'twitter'
+require 'yaml'
 
 
 class TwitterClient
@@ -6,11 +7,14 @@ class TwitterClient
 	attr_accessor :client
 
 	def initialize
+		#Load the configuration from file - look at the example file fo guidance
+		keys = YAML.load_file('config/twitter.yaml')
+
 		@client = Twitter::REST::Client.new do |config|
-  			config.consumer_key        = "WsXwVW22PQZUg5nfeOHYwLDCj"
-  			config.consumer_secret     = "hxE4wXFtlf5Vh1ZOt3zsNoF4U08saKUtBup8laOcHyUghz2Fcs"
-  			config.access_token        = "2897870321-BojBADvWCAocnhshduaqS1uawv3bTjtEtdXCLK2"
-  			config.access_token_secret = "uanQ9GnRj18HPBnqzaCDp0sEZy9Sy9qFolwcHpW9wavDO"
+  			config.consumer_key        = keys['consumer_key']
+  			config.consumer_secret     = keys['consumer_secret']
+  			config.access_token        = keys['access_token']
+  			config.access_token_secret = keys['access_token_secret']
   		end
 	end
 
@@ -33,8 +37,13 @@ class TwitterClient
 	def my_retweets
 		client.retweeted_by_me
 	end
+
+	def my_followers
+		client.followers
+	end
+
+	def get_timeline(user_id)
+		client.user_timeline(user_id, result_type: "recent")
+	end
+
 end
-
-#tc = TwitterClient.new
-
-#tc.search("#nairuby")
