@@ -33,7 +33,7 @@ config.consumer_secret     = "YOUR_CONSUMER_SECRET"
 config.access_token        = "YOUR_ACCESS_TOKEN"
 config.access_token_secret = "YOUR_ACCESS_SECRET"
 end
-´´´
+```
 
 Examples
 Searching for tweets
