@@ -38,34 +38,44 @@ end
 Examples
 Searching for tweets
 This will search for all resents tweets and will take the first 100 results.
-  	pre client.search(topic, result_type: "recent").take(100)
+```ruby
+client.search(topic, result_type: "recent").take(100)
+```
 
 Retweeting
 This will retweet the <i>id</i> 
- 	pre client.retweet(id)
-
+```ruby
+client.retweet(id)
+```
 #Sinatra
 The application uses <a href="http://www.sinatrarb.com">Sinatra</a> as the web application framework. It enabled a quick and easy way to get the application running.
 
 Installation
-  	pre gem install sinatra
+```ruby
+gem install sinatra
+```
 
 Examples
-	# myapp.rb
-	require 'sinatra'
+```ruby
+# myapp.rb
+require 'sinatra'
 
-	get '/' do
-		'Hello world!'
-	end
+get '/' do
+	'Hello world!'
+end
+```
 
- Running the application
-  	pre ruby myapp.rb
-
+Running the application
+```
+ruby myapp.rb
+```
 #Slim
 In conjunction with Sinatra, <a href="http://slim-lang.com">Slim</a> is used for html templating.
 
 Examples
-	doctype html
+
+```html
+doctype html
 	html
 		head
 			meta charset="utf-8"
@@ -80,6 +90,7 @@ Examples
 			== yield
 
 			script src="/js/bootstrap.min.js"
+```
 
 For more example visit the Slim hompepage.
 
@@ -88,14 +99,15 @@ For HTML, CSS and JS framework, the <a href="http://www.getbootstrap.com">Twitte
 
 Project setup
 For this application the simplest form for this was chosen, the bootstrap css files was direclty copied into the folders as statied below. The same was done for the js.
-	project/
-	├── public/
-	│   ├── css/
-	│   ├── js/
-	│   ├── fonts/
-	│   └── img/
-	└── views/
-
+```
+project/
+├── public/
+│   ├── css/
+│   ├── js/
+│   ├── fonts/
+│   └── img/
+└── views/
+```
 The CSS and the JS was then imported, as seen in the Slim example previous.
 
 #Datamapper
@@ -103,16 +115,17 @@ The CSS and the JS was then imported, as seen in the Slim example previous.
 
 At the moment the database only contains one table, which is used for storing all retweets. It is used when searching for new tweets to retweet - if there already exists a tweet in the databse with the same ID as a tweet found it will not retweet that tweet. If the tweet is not in the databse - the application will add it to the database and retweet the tweet found.
 
-	class TweetsDB
-		include DataMapper::Resource
-		property :id, Serial
-		property :tweet_id, String, :required => true
-		property :tweet_user_screen_name, String
-		property :tweet_text, String
-		property :retweeted, Boolean
-		property :retweeted_at, DateTime
-	end 
-
+```ruby
+class TweetsDB
+	include DataMapper::Resource
+	property :id, Serial
+	property :tweet_id, String, :required => true
+	property :tweet_user_screen_name, String
+	property :tweet_text, String
+	property :retweeted, Boolean
+	property :retweeted_at, DateTime
+end 
+```
 Enable editing of the database entries - for instance un-retweet tweets from the database.
 
 #Heroku
