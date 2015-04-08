@@ -18,7 +18,7 @@ Fix the static footer.
 Implement a fixed top nav bar.
 Ensure database deployment and continious integration.
 
-#twitter
+#Twitter
 Ruby Twitter gem
 For integration to Twitter the <a href="http://www.rubydoc.info/gems/twitter">Ruby Twitter Gem</a> is being used. 
 
@@ -42,8 +42,7 @@ Retweeting
 This will retweet the <i>id</i> 
  	pre client.retweet(id)
 
-#sinatra
-Sinatra
+#Sinatra
 The application uses <a href="http://www.sinatrarb.com">Sinatra</a> as the web application framework. It enabled a quick and easy way to get the application running.
 
 Installation
@@ -60,8 +59,7 @@ Examples
  Running the application
   	pre ruby myapp.rb
 
-#slim
-Slim
+#Slim
 In conjunction with Sinatra, <a href="http://slim-lang.com">Slim</a> is used for html templating.
 
 Examples
@@ -83,8 +81,7 @@ Examples
 
 For more example visit the Slim hompepage.
 
-#bootstrap
-Twitter Bootstrap
+#Twitter Bootstrap
 For HTML, CSS and JS framework, the <a href="http://www.getbootstrap.com">Twitter Bootstrap</a> was chosen.
 
 Project setup
@@ -99,8 +96,7 @@ For this application the simplest form for this was chosen, the bootstrap css fi
 
 The CSS and the JS was then imported, as seen in the Slim example previous.
 
-#datamapper
-Datamapper
+#Datamapper
 <a href="http://www.datamapper.org">Datamapper</a> is used for the database, it enabled fast and simple database setup and comes with several adapters for commonly used datastores. For this application the apatders used were; SQLite and Postgresql.
 
 At the moment the database only contains one table, which is used for storing all retweets. It is used when searching for new tweets to retweet - if there already exists a tweet in the databse with the same ID as a tweet found it will not retweet that tweet. If the tweet is not in the databse - the application will add it to the database and retweet the tweet found.
@@ -117,6 +113,5 @@ At the moment the database only contains one table, which is used for storing al
 
 Enable editing of the database entries - for instance un-retweet tweets from the database.
 
-#heroku
-Heroku
+#Heroku
 For deployment <a href="http://www.heroku.com">Heroku</a> is being used. There is a great tutorial on how to get started on their webpage: <a href="https://devcenter.heroku.com/articles/getting-started-with-ruby">Getting Started with Runy on Heroku<a/>
