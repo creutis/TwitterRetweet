@@ -22,10 +22,12 @@ Ensure database deployment and continious integration.
 Ruby Twitter gem
 For integration to Twitter the <a href="http://www.rubydoc.info/gems/twitter">Ruby Twitter Gem</a> is being used. 
 
-Installation
+##Installation
+```ruby
 gem install twitter
+```
 	
-Configuration
+##Configuration
 ```ruby
 client = Twitter::REST::Client.new do |config|
 	config.consumer_key        = "YOUR_CONSUMER_KEY"
@@ -35,14 +37,14 @@ client = Twitter::REST::Client.new do |config|
 end
 ```
 
-Examples
+##Examples
 Searching for tweets
 This will search for all resents tweets and will take the first 100 results.
 ```ruby
 client.search(topic, result_type: "recent").take(100)
 ```
 
-Retweeting
+##Retweeting
 This will retweet the <i>id</i> 
 ```ruby
 client.retweet(id)
@@ -50,12 +52,12 @@ client.retweet(id)
 #Sinatra
 The application uses <a href="http://www.sinatrarb.com">Sinatra</a> as the web application framework. It enabled a quick and easy way to get the application running.
 
-Installation
+##Installation
 ```ruby
 gem install sinatra
 ```
 
-Examples
+##Examples
 ```ruby
 # myapp.rb
 require 'sinatra'
@@ -65,15 +67,14 @@ get '/' do
 end
 ```
 
-Running the application
+##Running the application
 ```
 ruby myapp.rb
 ```
 #Slim
 In conjunction with Sinatra, <a href="http://slim-lang.com">Slim</a> is used for html templating.
 
-Examples
-
+##Examples
 ```html
 doctype html
 	html
@@ -97,7 +98,7 @@ For more example visit the Slim hompepage.
 #Twitter Bootstrap
 For HTML, CSS and JS framework, the <a href="http://www.getbootstrap.com">Twitter Bootstrap</a> was chosen.
 
-Project setup
+##Project setup
 For this application the simplest form for this was chosen, the bootstrap css files was direclty copied into the folders as statied below. The same was done for the js.
 ```
 project/
