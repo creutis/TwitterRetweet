@@ -69,7 +69,7 @@ end
 
 ##Running the application
 ```
-ruby myapp.rb
+rackup config.ru
 ```
 #Slim
 In conjunction with Sinatra, <a href="http://slim-lang.com">Slim</a> is used for html templating.
