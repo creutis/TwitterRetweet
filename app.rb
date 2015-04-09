@@ -201,6 +201,10 @@ post '/retweet_from_db' do
 		puts "Not Retweeting #{tweet.id}"
 	}
 
+	#Update the followers database entry for the follower used
+	puts "... updating the follower in the db with new :latest_search"
+	FollowersDB.get(@retweet_follower.id).update(:latest_search => Time.now)
+
 	redirect :/
 
 end
