@@ -16,3 +16,7 @@ div class="container-fluid"
 					td #{follower.user_screen_name}
 					td #{follower.user_name}
 					td #{follower.latest_search}
+	p
+		form action="/update_followers" method="post"
+			button class="btn btn-primary" type="submit" value="Update Followers" Update Followers
+	p Press button above to update your followers - it will check your followers from Twitter and update the DB accordingly

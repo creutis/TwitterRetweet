@@ -24,8 +24,6 @@ retweets_by_me.each do |tweet|
 end
 puts "----- FINISHED GETTING RETWEETS -----"
 
-sleep 10
-
 puts "----- GETTING FOLLOWERS -----"
 #Intilize the DB with all my followers
 
@@ -211,6 +209,62 @@ end
 get '/followers' do
 	@followers = FollowersDB.all(:order =>[:id.desc])
 	slim :followers	
+end
+
+post '/update_followers' do
+	
+	puts "----- GETIING ALL FOLLOWERS FROM TWITTER -----"
+	begin
+		@followers_from_twitter = client.my_followers
+	rescue => e
+		puts e.message
+	end
+	puts "... found #{@followers_from_twitter.count}"
+
+	puts "----- GETIING ALL FOLLOWERS FROM DB -----"
+	@followers_from_db = FollowersDB.all(:order =>[:id.desc])
+	puts "... found #{@followers_from_db.count}"
+
+	puts "----- ADDING FOLLOWERS TO DB -----"
+	@followers_from_twitter.each do |follower|
+		puts "Matching follower from twitter: #{follower.id} - #{follower.screen_name}"
+		follower_id_from_twitter = follower.id
+		follower_in_db =false
+		@followers_from_db.each do |follower_from_db|
+			puts "... with #{follower_from_db.user_id} from db"
+			if follower_id_from_twitter == follower_from_db.user_id
+				puts "... follower already in db"
+				follower_in_db = true
+			end
+		end
+		if !follower_in_db
+			puts "----- ADDING FOLLOWER [#{follower.id} - #{follower.screen_name}] TO DB -----"
+			FollowersDB.create(:user_name => follower.name,
+				:user_screen_name => follower.screen_name,
+				:user_id => follower.id,
+				:latest_search => Time.now)
+		end
+	end
+
+	puts "----- SCRUBBING FOLLOWERS IN DB -----"
+	@followers_from_db.each do |follower_db|
+		puts "Matching follower from DB: #{follower_db.user_id} - #{follower_db.user_screen_name}"
+		follower_id_from_db = follower_db.user_id
+		follower_on_twitter = false
+		@followers_from_twitter.each do |follower_twitter|
+			puts "... with #{follower_twitter.id} from twitter"
+			if follower_id_from_db == follower_twitter.id
+				puts "... follower also follower on twitter"
+				follower_on_twitter = true
+			end
+		end
+		if !follower_on_twitter
+			puts "----- REMOWING FOLLOWER [#{follower_db.user_id} - #{follower_db.user_screen_name}] FROM DB -----"
+			FollowersDB.destroy(follower_db.id)
+		end
+	end
+
+	redirect :followers
 end
 
 #CRUD TOPICS
