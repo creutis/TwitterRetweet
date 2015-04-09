@@ -215,10 +215,13 @@ get '/followers' do
 	slim :followers	
 end
 
+# Update followers in the DB - add new followers and destroy db entries for followers not following anymore
 post '/update_followers' do
 	
+
 	puts "----- GETIING ALL FOLLOWERS FROM TWITTER -----"
 	begin
+		# Get all followers from twitter
 		@followers_from_twitter = client.my_followers
 	rescue => e
 		puts e.message
@@ -226,21 +229,26 @@ post '/update_followers' do
 	puts "... found #{@followers_from_twitter.count}"
 
 	puts "----- GETIING ALL FOLLOWERS FROM DB -----"
+	# Get all followers from DB
 	@followers_from_db = FollowersDB.all(:order =>[:id.desc])
 	puts "... found #{@followers_from_db.count}"
 
 	puts "----- ADDING FOLLOWERS TO DB -----"
+	# Iterate over all followers from twitter
 	@followers_from_twitter.each do |follower|
 		puts "Matching follower from twitter: #{follower.id} - #{follower.screen_name}"
 		follower_id_from_twitter = follower.id
 		follower_in_db =false
+		# For each follower from twitter check if that follower is in the DB
 		@followers_from_db.each do |follower_from_db|
 			puts "... with #{follower_from_db.user_id} from db"
 			if follower_id_from_twitter == follower_from_db.user_id
 				puts "... follower already in db"
+				# Only change the flag when the follower form twitter is found in the db
 				follower_in_db = true
 			end
 		end
+		# If the follower was not found in the DB - add it!
 		if !follower_in_db
 			puts "----- ADDING FOLLOWER [#{follower.id} - #{follower.screen_name}] TO DB -----"
 			FollowersDB.create(:user_name => follower.name,
@@ -251,17 +259,21 @@ post '/update_followers' do
 	end
 
 	puts "----- SCRUBBING FOLLOWERS IN DB -----"
+	# Check all followers in the DB and remove those not following anymore
 	@followers_from_db.each do |follower_db|
 		puts "Matching follower from DB: #{follower_db.user_id} - #{follower_db.user_screen_name}"
 		follower_id_from_db = follower_db.user_id
 		follower_on_twitter = false
+		# For each follower in the DB check if that follower is also actually following still
 		@followers_from_twitter.each do |follower_twitter|
 			puts "... with #{follower_twitter.id} from twitter"
 			if follower_id_from_db == follower_twitter.id
 				puts "... follower also follower on twitter"
+				# Update only when finding a match
 				follower_on_twitter = true
 			end
 		end
+		# If the follower in the db was not found from the follower on twitter - remove it from the db
 		if !follower_on_twitter
 			puts "----- REMOWING FOLLOWER [#{follower_db.user_id} - #{follower_db.user_screen_name}] FROM DB -----"
 			FollowersDB.destroy(follower_db.id)
