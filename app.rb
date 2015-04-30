@@ -1,11 +1,18 @@
 require 'sinatra'
 require 'data_mapper'
 require 'slim'
+require 'logger'
 require_relative 'twitterclient.rb'
+
+$LOG = Logger.new('./logs/application.log', 10, 1024000)
+$LOG.datetime_format = '%Y-%m-%d %H:%M:%S'
+
+$LOG.info("Starting the application")
 
 client = TwitterClient.new
 
 puts "---- GETTING RETWEETS ----"
+$LOG.info("Initializing database with retweets from Twitter API")
 #Looking for all my retweets and adds those to the database
 begin
 	retweets_by_me = client.my_retweets
@@ -15,16 +22,17 @@ rescue => e
 end
 
 retweets_by_me.each do |tweet|
-	puts "Retweet [#{tweet.id}]: #{tweet.text}"
+	puts "[#{tweet.id}] ADDED TO DB: #{tweet.text}"
+	$LOG.info("#{tweet.id} - #{tweet.text} added to the database")
 	TweetsDB.create(:tweet_id => tweet.id.to_s,
 		:tweet_user_screen_name => tweet.user.screen_name,
 		:tweet_text => tweet.text,
 		:retweeted => true,
 		:retweeted_at => Time.now)
 end
-puts "----- FINISHED GETTING RETWEETS -----"
 
 puts "----- GETTING FOLLOWERS -----"
+$LOG.info("Initializing database with followers from Twitter API")
 #Intilize the DB with all my followers
 
 #Get all my followers
@@ -37,7 +45,8 @@ end
 	
 #Iterate over all my followers and add them to the database
 my_followers.each do |follower|
-	puts "Followers [#{follower.id}]: #{follower.screen_name} => #{follower.name} "
+	puts "[#{follower.id}] ADDED TO DB: #{follower.screen_name} => #{follower.name}"
+	$LOG.info("[#{follower.id}] - #{follower.screen_name} => #{follower.name} added to the database")
 	FollowersDB.create(:user_name => follower.name,
 		:user_screen_name => follower.screen_name,
 		:user_id => follower.id,
@@ -51,24 +60,29 @@ TopicsDB.create(:topic => "#mtg")
 
 #Default route
 get '/' do
+	$LOG.info("ROUTING get /")
 	slim :index
 end
 
 get '/search' do
+	$LOG.info("ROUTING get /search")
 	slim :search
 end
 
 get '/retweet' do
+	$LOG.info("ROUTING get /retweet")
 	slim :retweet
 end
 
-get'/db_view' do
+get '/db_view' do
+	$LOG.info("ROUTING get /db_view")
 	@tweets = TweetsDB.all(:order => [:id.desc])
 	slim :db_view
 end
 
 #Route triggered by the search button
 post '/results' do
+	$LOG.info("ROUTING post /results")
 	@topic = params[:topic]
 	#Search for a specific topic
 	@results = client.search(@topic)
@@ -77,16 +91,18 @@ end
 
 #Route triggered by the Home button from the search results
 post '/back' do
+	$LOG.info("ROUTING post /back")
 	redirect :/
 end
 
 post '/retweet' do
-	puts "Time to retweet"
+	$LOG.info("ROUTING post /retweet")
+	puts "----- RETWEET -----"
 	
 	@twitter_search = client.search("#nairuby")
 
 	@twitter_search.each do |tweet|
-		puts "Twitter id: #{tweet.id} - #{tweet.text}"
+		puts "... checking if retweetable - #{tweet.id} - #{tweet.text}"
 		if TweetsDB.count(:tweet_id =>tweet.id) == 0
 			#Tweet not in database - checks if the tweet should be retweeted
 			retweet_this_tweet = false
@@ -95,21 +111,21 @@ post '/retweet' do
 				begin
 					client.retweet(tweet.id)
 					retweet_this_tweet = true
-					puts "Retweeted #{tweet.id}"
+					puts "... retweeted #{tweet.id}"
 				rescue => e
 					puts e.message
 				end
 			end
 
 			#Creating database entry for the tweet - using the boolean if the tweet was retweeted or not
-			puts "Creting database record for #{tweet.id}"
+			puts "... adding the tweet to the database - #{tweet.id}"
 			TweetsDB.create(:tweet_id => tweet.id.to_s,
 				:tweet_user_screen_name => tweet.user.screen_name,
 				:tweet_text => tweet.text,
 				:retweeted => retweet_this_tweet,
 				:retweeted_at => Time.now)
 		else
-			puts "#{tweet.user.screen_name} - Twitter ID: #{tweet.id} already in database"
+			puts "... tweet already in the database or error from twitter -  [#{tweet.id}]"
 		end
 	end
 
@@ -117,7 +133,7 @@ post '/retweet' do
 end
 
 post '/retweet_from_db' do
-	puts "Retweeting from DB"
+	puts "------ RETWEETING USING THE DB ------"
 
 	to_be_retweeted = []
 	not_to_be_retweeted = []
@@ -126,7 +142,7 @@ post '/retweet_from_db' do
 
 	#Get the follower to use for retweeting - needs some testing and might need error handling if the Collection will be nil
 	@retweet_follower = FollowersDB.all(:limit => 1, :order => [:latest_search.asc]).first
-	puts "The follower to check is - #{@retweet_follower.user_id} - #{@retweet_follower.user_screen_name}"
+	puts "... checking follower: #{@retweet_follower.user_id} - #{@retweet_follower.user_screen_name}"
 
 	#Get all the topics to search for
 	@retweet_topics = TopicsDB.all
@@ -142,16 +158,16 @@ post '/retweet_from_db' do
 			if !retweet
 				if tweet.text.include? topic.topic
 					retweet = true
-					puts "RETWEET - #{tweet.text} ==> matching #{topic.topic}"
+					puts "[#{tweet.id}] MATCH: #{tweet.text} ==> matching #{topic.topic}"
 				end
 			end
 		end
 
 		if retweet
-			puts "RETWEET - #{tweet.text}"
+			#puts "RETWEET - #{tweet.text}"
 			to_be_retweeted.push(tweet)
 		else
-			puts "NOPE    - #{tweet.text}"
+			puts "[#{tweet.id}] NO MATCH: #{tweet.text}"
 			not_to_be_retweeted.push(tweet)
 		end
 	end
@@ -161,44 +177,42 @@ post '/retweet_from_db' do
 	# => 2. Check if twitter id is already in the database
 	# => 3. Try and retweet - catch all errors...
 
-	#Iterate over all tweets to be retweeted
-	puts "These will be retweeted - #{to_be_retweeted}"
-	to_be_retweeted.each { |tweet|
-		puts "Reetweeting #{tweet.id}"
-	}
-
 	#Retweet all tweets that matched the topics in the database
+	puts "----- RETWEETING MATCHING TWEETS -----"
 	to_be_retweeted.each do |tweet|
+		# Flag used in the database if the tweet was retweeted or not
 		retweet = false
+		# Check if tweet is in the databse
 		if TweetsDB.count(:tweet_id =>tweet.id) == 0
 			#Tweet not in database - checks if the tweet should be retweeted
 			if tweet.user != this_user
 				#Try and retweet - catch all errors (if error is raised the tweet will be added to the database with retweeet == false)
 				begin
 					client.retweet(tweet.id)
-					puts "RETWEET ==> #{tweet.id}"
+					puts "... retweeting ==> #{tweet.id}"
 					retweet = true
 				rescue => e
 					puts "ERROR ==> #{e.message} [#{tweet.id}]"
 				end
+			else
+				puts "... can't retweet your own tweets"
 			end
 
 			#Creating database entry for the tweet - using the boolean if the tweet was retweeted or not
-			puts "Creting database record for #{tweet.id}"
+			puts "... creating database record for #{tweet.id}"
 			TweetsDB.create(:tweet_id => tweet.id.to_s,
 				:tweet_user_screen_name => tweet.user.screen_name,
 				:tweet_text => tweet.text,
 				:retweeted => retweet,
 				:retweeted_at => Time.now)
 		else
-			puts "#{tweet.user.screen_name} - Twitter ID: #{tweet.id} already in database"
+			puts "... already in the database - #{tweet.id}"
 		end
 	end
 
 	#Iterate over all tweet not to be retweeeted
-	puts "These will not be retweeted - #{not_to_be_retweeted}"
 	not_to_be_retweeted.each { |tweet|
-		puts "Not Retweeting #{tweet.id}"
+		puts "... will not be retweeted - #{tweet.id}"
 	}
 
 	#Update the followers database entry for the follower used

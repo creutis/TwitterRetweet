@@ -9,6 +9,8 @@ It uses the Twitter Gem for integrating with the Twitter API. It uses Sinatra fo
 
 For more indepth description on the different techniques used, see below.
 
+Added application to Codeship and Travis CI for CI builds.
+
 Add PROCFILE for Heroku.
 Improve error handling.
 Add some tests.
